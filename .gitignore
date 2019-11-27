@@ -40,4 +40,8 @@ rsconnect/
 
 **/Big_files
 
+# Log files (specially for the ones got from MSsstats processing steps)
+
+*.log
+
 
