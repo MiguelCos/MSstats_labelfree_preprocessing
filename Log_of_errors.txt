@@ -1,0 +1,92 @@
+## There is an error when using MQtoMSstats and using tibble dataframes as input.
+
+If the the protein group file or the evidence file were read by read_delim, it throws a warning indicating parsing failures. This does not happen when using read.table.
+
+This is the warning I get when using read_delim:
+
+Parsed with column specification:
+cols(
+  .default = col_double(),
+  Sequence = col_character(),
+  Modifications = col_character(),
+  `Modified sequence` = col_character(),
+  `Oxidation (M) Probabilities` = col_character(),
+  `Oxidation (M) Score Diffs` = col_character(),
+  Proteins = col_character(),
+  `Leading proteins` = col_character(),
+  `Leading razor protein` = col_character(),
+  `Gene names` = col_character(),
+  `Protein names` = col_character(),
+  Type = col_character(),
+  `Raw file` = col_character(),
+  Experiment = col_character(),
+  Reverse = col_logical(),
+  `Potential contaminant` = col_character(),
+  `Protein group IDs` = col_character(),
+  `MS/MS IDs` = col_character(),
+  `AIF MS/MS IDs` = col_logical(),
+  `Oxidation (M) site IDs` = col_character()
+)
+See spec(...) for full column specifications.
+733 parsing failures.
+  row     col           expected actual                                                                              file
+21300 Reverse 1/0/T/F/TRUE/FALSE      + 'E:/R_Projects/MSstats_labelfree_preprocessing/Big_files/evidence_pancan_sc1.txt'
+21301 Reverse 1/0/T/F/TRUE/FALSE      + 'E:/R_Projects/MSstats_labelfree_preprocessing/Big_files/evidence_pancan_sc1.txt'
+21302 Reverse 1/0/T/F/TRUE/FALSE      + 'E:/R_Projects/MSstats_labelfree_preprocessing/Big_files/evidence_pancan_sc1.txt'
+21303 Reverse 1/0/T/F/TRUE/FALSE      + 'E:/R_Projects/MSstats_labelfree_preprocessing/Big_files/evidence_pancan_sc1.txt'
+21304 Reverse 1/0/T/F/TRUE/FALSE      + 'E:/R_Projects/MSstats_labelfree_preprocessing/Big_files/evidence_pancan_sc1.txt'
+..... ....... .................. ...... .................................................................................
+See problems(...) for more details.
+Parsed with column specification:
+cols(
+  Raw.file = col_character(),
+  Condition = col_character(),
+  BioReplicate = col_double(),
+  IsotopeLabelType = col_character()
+)
+Parsed with column specification:
+cols(
+  .default = col_double(),
+  Protein.IDs = col_character(),
+  `Majority protein IDs` = col_character(),
+  `Peptide counts (all)` = col_character(),
+  `Peptide counts (razor+unique)` = col_character(),
+  `Peptide counts (unique)` = col_character(),
+  `Protein names` = col_character(),
+  `Gene names` = col_character(),
+  `Fasta headers` = col_character(),
+  `Sequence lengths` = col_character(),
+  `Identification type 12-neo-long` = col_character(),
+  `Identification type 14-no-neo-short` = col_character(),
+  `Identification type 18-neo-long` = col_character(),
+  `Identification type 24-neo-long` = col_character(),
+  `Identification type 27-no-neo-long` = col_character(),
+  `Identification type 35-no-neo-short` = col_character(),
+  `Identification type 38-no-neo-short` = col_character(),
+  `Identification type 42-no-neo-long` = col_character(),
+  `Identification type 47-no-neo-long` = col_character(),
+  `Identification type 48-no-neo-short` = col_character(),
+  `Identification type 49-no-neo-long` = col_character()
+  # ... with 22 more columns
+)
+See spec(...) for full column specifications.
+31 parsing failures.
+ row     col           expected actual                                                                                             file
+2378 Reverse 1/0/T/F/TRUE/FALSE      + 'E:/R_Projects/MSstats_labelfree_preprocessing/Data/Pan_Can_Cohort/proteinGroups_pancan_sc1.txt'
+2379 Reverse 1/0/T/F/TRUE/FALSE      + 'E:/R_Projects/MSstats_labelfree_preprocessing/Data/Pan_Can_Cohort/proteinGroups_pancan_sc1.txt'
+2380 Reverse 1/0/T/F/TRUE/FALSE      + 'E:/R_Projects/MSstats_labelfree_preprocessing/Data/Pan_Can_Cohort/proteinGroups_pancan_sc1.txt'
+2381 Reverse 1/0/T/F/TRUE/FALSE      + 'E:/R_Projects/MSstats_labelfree_preprocessing/Data/Pan_Can_Cohort/proteinGroups_pancan_sc1.txt'
+2382 Reverse 1/0/T/F/TRUE/FALSE      + 'E:/R_Projects/MSstats_labelfree_preprocessing/Data/Pan_Can_Cohort/proteinGroups_pancan_sc1.txt'
+.... ....... .................. ...... ................................................................................................
+See problems(...) for more details.
+
+## Now, if the output of read_delim is used as input into MaxQtoMSstatsFormat (the proteinGroups file), then I see this error:
+
+Unknown or uninitialised column: 'Contaminant'.Unknown or uninitialised column: 'Potential.contaminant'.Unknown or uninitialised column: 'Only.identified.by.site'.** + Contaminant, + Reverse, + Only.identified.by.site, proteins are removed.
+Unknown or uninitialised column: 'Contaminant'.Unknown or uninitialised column: 'Potential.contaminant'.Unknown or uninitialised column: 'Only.identified.by.site'.Unknown or uninitialised column: 'Protein.group.IDs'.Error in fix.by(by.x, x) : 'by' must specify a uniquely valid column
+
+## I will write a script to check for the differences between the objects created by read_delim and read.table
+
+## So, according to what I found, read.table does some modification in the column names by adding a dot '.' where there are spaces originally... read_delim and other readr options don't do
+that, and it seems that MSstats require it the input files to have this kind of names... So... Always use base-r options for reading files when interested on using them as MSstats input. 
+

@@ -43,5 +43,18 @@ rsconnect/
 # Log files (specially for the ones got from MSsstats processing steps)
 
 *.log
+sessionInfo.txt
 
+# R objects that could be too big 
+
+*.Rda
+
+# Output data 
+
+**/MSstats_formated_files
+
+# Specific exploratory scripts 
+
+check_diff_baser_n_readr_dataload_for_msstats.R
+quick_tests.R
 
