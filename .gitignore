@@ -52,7 +52,13 @@ sessionInfo.txt
 # Output data 
 
 **/MSstats_formated_files
+**/MSstats_Output_data
 *.pdf
+*.csv
+*.txt
+**/MSstats_Exploration_Outputs
+*.xlsx
+
 
 # Specific exploratory scripts 
 
