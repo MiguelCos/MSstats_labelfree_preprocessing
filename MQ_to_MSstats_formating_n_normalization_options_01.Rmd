@@ -43,23 +43,23 @@ Here I am evaluating different argument options for the `MaxQtoMSstatsFormat()` 
 This is the default parameter.
 
 ```{r mqtomstformat1}
-if(dir.exists(here::here("MSstats_Output_data")) == FALSE){dir.create(here::here("MSstats_Output_data"))}
+if(dir.exists(here::here("MSstats_Exploration_Outputs")) == FALSE){dir.create(here::here("MSstats_Exploration_Outputs"))}
 
-if(file.exists(x = here::here("MSstats_Output_data/msts_data_w1pep.Rda")) == FALSE){ # check if Rda file with the data is already available. 
+if(file.exists(x = here::here("MSstats_Exploration_Outputs/msts_data_w1pep.Rda")) == FALSE){ # check if Rda file with the data is already available. 
       
       msts_data_w1pep <- MaxQtoMSstatsFormat(evidence = evidence,
                                          annotation = annotation,
                                          proteinGroups = proteingroups,
                                          removeProtein_with1Peptide = FALSE)
       
-      save(msts_data_w1pep, file = here::here("MSstats_Output_data/msts_data_w1pep.Rda")) # save Rda file for faster loading later if required
+      save(msts_data_w1pep, file = here::here("MSstats_Exploration_Outputs/msts_data_w1pep.Rda")) # save Rda file for faster loading later if required
       
-      if(dir.exists(here::here("MSstats_Output_data/MSstats_formated_tables")) == FALSE){dir.create(here::here("MSstats_Output_data/MSstats_formated_tables"))}
+      if(dir.exists(here::here("MSstats_Exploration_Outputs/MSstats_formated_tables")) == FALSE){dir.create(here::here("MSstats_Exploration_Outputs/MSstats_formated_tables"))}
       
-      write.csv(x = msts_data_w1pep, file = here::here("MSstats_Output_data/MSstats_formated_tables/msstats_data_protsw1pep.csv")) # protsw1pep means 'this file contains proteins that were identified only with 1 peptide". 
+      write.csv(x = msts_data_w1pep, file = here::here("MSstats_Exploration_Outputs/MSstats_formated_tables/msstats_data_protsw1pep.csv")) # protsw1pep means 'this file contains proteins that were identified only with 1 peptide". 
 } else {
       
-      load(here::here("MSstats_Output_data/msts_data_w1pep.Rda")) # load the Rda file if available.
+      load(here::here("MSstats_Exploration_Outputs/msts_data_w1pep.Rda")) # load the Rda file if available.
       
 }
 ```
@@ -67,9 +67,9 @@ if(file.exists(x = here::here("MSstats_Output_data/msts_data_w1pep.Rda")) == FAL
 ### Set `removeProtein_with1Peptide = **TRUE**` (all other params to default)
 
 ```{r mqtomstformat2}
-if(dir.exists(here::here("MSstats_Output_data")) == FALSE){dir.create(here::here("MSstats_Output_data"))}
+if(dir.exists(here::here("MSstats_Exploration_Outputs")) == FALSE){dir.create(here::here("MSstats_Exploration_Outputs"))}
 
-if(file.exists(x = here::here("MSstats_Output_data/msts_data_noprotw1pep.Rda")) == FALSE){ # check if Rda file with the data is already available. 
+if(file.exists(x = here::here("MSstats_Exploration_Outputs/msts_data_noprotw1pep.Rda")) == FALSE){ # check if Rda file with the data is already available. 
       
       msts_data_noprotw1pep <- MaxQtoMSstatsFormat(evidence = evidence,
                                          annotation = annotation,
@@ -77,14 +77,14 @@ if(file.exists(x = here::here("MSstats_Output_data/msts_data_noprotw1pep.Rda")) 
                                          removeProtein_with1Peptide = TRUE)
       
       
-      save(msts_data_noprotw1pep, file = here::here("MSstats_Output_data/msts_data_noprotw1pep.Rda")) # save Rda file for faster loading later if required
+      save(msts_data_noprotw1pep, file = here::here("MSstats_Exploration_Outputs/msts_data_noprotw1pep.Rda")) # save Rda file for faster loading later if required
       
-      if(dir.exists(here::here("MSstats_Output_data/MSstats_formated_tables")) == FALSE){dir.create(here::here("MSstats_Output_data/MSstats_formated_tables"))}
+      if(dir.exists(here::here("MSstats_Exploration_Outputs/MSstats_formated_tables")) == FALSE){dir.create(here::here("MSstats_Exploration_Outputs/MSstats_formated_tables"))}
       
-      write.csv(x = msts_data_noprotw1pep, file = here::here("MSstats_Output_data/MSstats_formated_tables/msstats_data_noprotw1pep.csv")) # noprotw1pe means 'this file does not contains proteins that were identified only with 1 peptide". 
+      write.csv(x = msts_data_noprotw1pep, file = here::here("MSstats_Exploration_Outputs/MSstats_formated_tables/msstats_data_noprotw1pep.csv")) # noprotw1pe means 'this file does not contains proteins that were identified only with 1 peptide". 
 } else {
       
-      load(here::here("MSstats_Output_data/msts_data_noprotw1pep.Rda")) # load the Rda file if available.
+      load(here::here("MSstats_Exploration_Outputs/msts_data_noprotw1pep.Rda")) # load the Rda file if available.
       
 }
 ```
