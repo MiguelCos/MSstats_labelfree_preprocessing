@@ -49,6 +49,7 @@ sessionInfo.txt
 
 **/MSstats_formated_files
 **/MSstats_Output_data
+*/Msstats_Outout_data
 *.pdf
 *.csv
 *.txt
