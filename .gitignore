@@ -14,10 +14,6 @@
 # Output files from R CMD check
 /*.Rcheck/
 
-# RStudio files
-.Rproj.user/
-*.Rproj
-
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
@@ -65,3 +61,4 @@ sessionInfo.txt
 check_diff_baser_n_readr_dataload_for_msstats.R
 quick_tests.R
 
+.Rproj.user
