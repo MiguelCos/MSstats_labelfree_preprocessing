@@ -143,7 +143,6 @@ dataProcessPlots(data = dp_all_log2_noNorm,
 ## Getting tabular data into wide format as an input for Limma  
 
 The `RunlevelData` section of the `list` generated after `dataProcess` by MSstats contains the tabular data.  
-
 The 'Run level data' has information of LogIntensities for proteins per MS Run. The first step before transforming the data into a wide format with 1 line per protein and 1 column per condition will be to take the mean LogIntensities of the Runs per protein.
 
 ```{r get_runlevdata)}

@@ -1,3 +1,9 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
 # MSstats label-free preprocessing
 
 This repo contains a script and a Rmd file for the pre-processing and normalization of MaxQuant output files through the `MSstats` R package. The output is a tabular file in wide format (1 row per protein, 1 column per sample/condition) that could be used as an input to run statistics with `Limma` or similar. 
