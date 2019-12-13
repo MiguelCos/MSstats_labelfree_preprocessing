@@ -5,6 +5,9 @@
 ###
 ##################################################################################################################
 
+## This script will take you MaxQuant output (evidence.txt and proteinGroup.txt files) and an annotation file, 
+# will run MSstats normalization and then generate a tsv file that can be used as Input into Limma 
+# 
 
 ### Set conditions here ####
 
@@ -16,7 +19,8 @@ evidence_file_location <- "evidence.txt"
 
 proteinGroups_file_location <- "proteinGroup.txt"
 
-annotation_file_location <- "Data/Pan_Can_Cohort/annotation.csv" 
+annotation_file_location <- "annotation.txt"
+
 # See how to create the annotation file in the README
 # A more "automatic" way of creating this should be available 
 # In a future version of this script.
@@ -32,7 +36,7 @@ removeProtein_with1Peptide <- FALSE
 ## What type of normalization to execute? 
 # Default and recommended: "equalizeMedians"
 
-# Options: "quantile", FALSE (no normalization) or ""equalizeMedians"
+# Options: "quantile", FALSE (no normalization) or "equalizeMedians"
 
 NormalizationType <- "equalizeMedians"
 
@@ -66,7 +70,7 @@ if(removeProtein_with1Peptide == FALSE){
 } else {
       w1peptcond <- "noprotsw1pep"
 }
-
+   
 
 # Label for the normalization type condition
 

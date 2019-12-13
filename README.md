@@ -30,11 +30,30 @@ This repo contains a script and a Rmd file for the pre-processing and normalizat
 
 7. Click 'Source' in your R Studio session
 
-8. The script should generate two `.csv` files: one in long MSstats-format and one in wide format, suitable as an input for Limma. 
+8. The script should generate two `.csv` files: one in long MSstats-format and one in wide format, suitable as an input for Limma.  
 
-### Creating the annotation file (provisional)  
+### Creating the annotation file   
 
-At some point I will add something in the processing script (or create a new script) for trying to automotize this, but for now, the annotation.csv file can be created manually as described now.
+You have 2 options to create your annotation file:   
+
+- Use the `create_annotation_file.R` script created for this purpuse (*RECOMENDED*).   
+
+- Manually create your `annotation.csv` file in a spread sheet editor (such as MS Excel)  
+
+
+#### Using the `create_annotation_file.R` 'interactive' script   
+
+1. Corroborate that you have the `create_annotation_file.R` in your R Project folder.  
+
+2. Go to the Console in your opened R Studio project session.  
+
+3. Type `source("create_annotation_file.R")`
+
+4. Answer the questions as prompted on the Console in your R session.  
+
+5. *Important!*: please corroborate that your sample names/codes correspond with the desired experimental condition by opening the newly created `annotation.csv` file. It should be in the same folder of your R Project.  
+
+#### Manually create your `annotation.csv` file in a spread sheet editor  
 
 1. Open a new spread sheet (i.e. in MS Excel).
 
