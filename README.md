@@ -1,4 +1,4 @@
----
+  ---
 output:
   pdf_document: default
   html_document: default
@@ -32,16 +32,16 @@ This repo contains a script and a Rmd file for the pre-processing and normalizat
 
 8. The script should generate two `.csv` files: one in long MSstats-format and one in wide format, suitable as an input for Limma.  
 
-### Creating the annotation file   
+## Creating the annotation file   
 
 You have 2 options to create your annotation file:   
 
-- Use the `create_annotation_file.R` script created for this purpuse (*RECOMENDED*).   
+- Use the `create_annotation_file.R` script created for this purpuse (*RECOMENDED*). **NOTE**: Now the script only works if every sample corresponds to a different biological replicate and for label-free samples. 
 
 - Manually create your `annotation.csv` file in a spread sheet editor (such as MS Excel)  
 
 
-#### Using the `create_annotation_file.R` 'interactive' script   
+### Using the `create_annotation_file.R` 'interactive' script   
 
 1. Corroborate that you have the `create_annotation_file.R` in your R Project folder.  
 
@@ -53,7 +53,7 @@ You have 2 options to create your annotation file:
 
 5. *Important!*: please corroborate that your sample names/codes correspond with the desired experimental condition by opening the newly created `annotation.csv` file. It should be in the same folder of your R Project.  
 
-#### Manually create your `annotation.csv` file in a spread sheet editor  
+### Manually create your `annotation.csv` file in a spread sheet editor  
 
 1. Open a new spread sheet (i.e. in MS Excel).
 
