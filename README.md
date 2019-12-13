@@ -36,7 +36,7 @@ This repo contains a script and a Rmd file for the pre-processing and normalizat
 
 You have 2 options to create your annotation file:   
 
-- Use the `create_annotation_file.R` script created for this purpuse (*RECOMENDED*). **NOTE**: Now the script only works if every sample corresponds to a different biological replicate and for label-free samples. 
+- Use the `create_annotation_file.R` script created for this purpuse (*RECOMENDED*). **NOTE**: Now the script only works if every sample corresponds to a different biological replicate and for label-free samples. Manually create your file if otherwise. 
 
 - Manually create your `annotation.csv` file in a spread sheet editor (such as MS Excel)  
 
