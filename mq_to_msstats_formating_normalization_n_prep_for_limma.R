@@ -15,7 +15,7 @@
 
 # Note: the files should be in the same R Project file from where the script would be executed. 
 
-evidence_file_location <- "evidence.txt"
+evidence_file_location <- "evidence_pancan_sc1.txt"
 
 proteinGroups_file_location <- "proteinGroup.txt"
 
@@ -31,14 +31,37 @@ annotation_file_location <- "annotation.txt"
 
 # Default is FALSE, meaning: you want to keep even those proteins identified w 1 peptide. 
 
-removeProtein_with1Peptide <- FALSE 
+remove_w1pep1 <- menu(c("Yes", "No"), 
+                      title= "Do you want to remove proteins identified only with 1 peptide from your analysis")
+
+remove_w1pep <- if(remove_w1pep1 == 1){TRUE} else {
+                  if(remove_w1pep1 == 2){
+                                    FALSE
+                                    }}
 
 ## What type of normalization to execute? 
 # Default and recommended: "equalizeMedians"
 
 # Options: "quantile", FALSE (no normalization) or "equalizeMedians"
 
-NormalizationType <- "equalizeMedians"
+norm_type <- menu(c("quantile", "equalizeMedians", "No normalization"), 
+                  title= "What type  of normalization you want to execute? (equalizeMedians recommended)")
+
+NormalizationType <- if(norm_type == 1){"quantile"} else {
+                        if(norm_type == 2){"equalizeMedians"} else {
+                              if(norm_type == 3){
+                                    FALSE
+                              }
+                        }
+}
+
+pif_filter <- menu(c("Yes", "No"), 
+                   title= "Do you want to set a filter for the PIF value of quantitation?")
+
+
+if(pif_filter == 1){
+      pif_filter_threshold <- as.numeric(readline("Please type the threshold of your PIF filter (between 0 and 1; i.e. 0.8) "))
+}
 
 
 ####################################### SCRIPT EXECUTION #######################
@@ -61,7 +84,6 @@ proteingroups <- read.table(file = here::here(proteinGroups_file_location),
                             sep = "\t",
                             header = TRUE)
 
-
 ### Create label IDs for naming files according to conditions ####
 
 # Label for the 'removePeptw1peptide' condition
@@ -70,7 +92,7 @@ if(removeProtein_with1Peptide == FALSE){
 } else {
       w1peptcond <- "noprotsw1pep"
 }
-   
+
 
 # Label for the normalization type condition
 
@@ -155,6 +177,9 @@ if(dir.exists(here::here("MSstats_Output_data")) == FALSE){
 
 write_csv(x = tab_wide_msts_data, path = here::here("MSstats_Output_data/
                                                     msstats_tabular_data_for_limma_input.csv"))
+
+
+message("File 'msstats_tabular_data_for_limma_input.csv' was stored into MSstats_Output_data")
 
 
 
