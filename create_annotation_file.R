@@ -1,14 +1,24 @@
-### Create annotation file for MSstats #####
+##################################################################################################################
+### 
+### 'Interactive' script to create the annotation.csv file required as input into MSstats                  #######
+### Miguel Cosenza v1.0 13.12.2019
+###
+##################################################################################################################
 
+# Small README note ---- 
 
+# Please execute this script to create your annotation file for MSstats and corroborate that your sample names/codes 
+# correspond with your experimental conditions 
 
-sample_init <- readline("Please indicate the two-letter identifier for your samples (p.e. 'MC') ")
+# ----
+
+sample_init <- readline("Please indicate the two-letter identifier for your samples (i.e. 'MC') ")
 
 n_samples <- readline("How many samples do you have? ")
 
-min_code_num <- as.numeric(readline("Please indicate the number code of your first sample (p.e. 21) "))
+min_code_num <- as.numeric(readline("Please indicate the number code of your first sample (i.e. 21) "))
 
-max_code_num <- as.numeric(readline("Please indicate the number code of your last sample (p.e. 38) "))
+max_code_num <- as.numeric(readline("Please indicate the number code of your last sample (i.e. 38) "))
 
 bioreplicates <- menu(c("Yes", "No"), 
                       title= "Is every sample representative of an unique Biological replicate")
