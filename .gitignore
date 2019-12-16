@@ -55,6 +55,7 @@ sessionInfo.txt
 *.txt
 **/MSstats_Exploration_Outputs
 *.xlsx
+*.docx
 
 
 # Specific exploratory scripts 
