@@ -18,19 +18,17 @@ This repo contains a script and a Rmd file for the pre-processing and normalizat
 
 - evidence.txt
 - proteinGroups.txt
-- annotation.csv (not included in the MaxQuant txt folder, see below how to create this one).
+- annotation.csv (not included in the MaxQuant txt folder, see below how to create this one before executing the script).
 
 **NOTE**: These files should be in the same folder as the R script, and this folder should be an initiated RStudio project (There should be a .Rproj file in the same folder). 
 
 4. Open your RStudio project by double-clicking the `.Rproj` file in your newly created R project folder. 
 
-5. Open the script `mq_to_msstats_formating_normalization_n_prep_for_limma.R`
+5. Type in your R console: `source("mq_to_msstats_formating_normalization_n_prep_for_limma")` to execute the script.  
 
-6. Set the options to run the pre-processing and normalization with MSstats in the 'Set conditions' section of the script between the lines 9 and 32
+6. Answer the questions as promted on the R console.  
 
-7. Click 'Source' in your R Studio session
-
-8. The script should generate two `.csv` files: one in long MSstats-format and one in wide format, suitable as an input for Limma.  
+7. The script should generate two `.csv` files: one in long MSstats-format and one in wide format, suitable as an input for Limma.  
 
 ## Creating the annotation file   
 

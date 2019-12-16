@@ -26,14 +26,14 @@ library(MSstats)
 ## Load input data 
 
 ```{r load_input_data}
-evidence <- read.table(file = here::here("Big_files/evidence_pancan_sc1.txt"),
+evidence <- read.table(file = here::here("evidence.txt"),
                        sep = "\t",
                        header = TRUE)
 
-annotation <- read.csv(file = here::here("Data/Pan_Can_Cohort/annotation_pancan_sc1.csv"),
+annotation <- read.csv(file = here::here("annotation.csv"),
                        header = TRUE)
 
-proteingroups <- read.table(file = here::here("Data/Pan_Can_Cohort/proteinGroups_pancan_sc1.txt"),
+proteingroups <- read.table(file = here::here("proteinGroups.txt"),
                             sep = "\t",
                             header = TRUE)
 ```

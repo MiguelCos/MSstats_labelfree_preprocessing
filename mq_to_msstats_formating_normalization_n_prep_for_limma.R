@@ -1,8 +1,8 @@
 ##################################################################################################################
 ### 
 ### Formating, normalization and generation of Limma-ready tabular file from MaxQuant output using MSstats #######
-### Miguel Cosenza v1.0 
-###
+### Miguel Cosenza v1.0.1 
+### 16.12.2019
 ##################################################################################################################
 
 ## This script will take you MaxQuant output (evidence.txt and proteinGroup.txt files) and an annotation file, 
@@ -15,11 +15,11 @@
 
 # Note: the files should be in the same R Project file from where the script would be executed. 
 
-evidence_file_location <- "evidence_pancan_sc1.txt"
+evidence_file_location <- "evidence.txt"
 
-proteinGroups_file_location <- "proteinGroup.txt"
+proteinGroups_file_location <- "proteinGroups.txt"
 
-annotation_file_location <- "annotation.txt"
+annotation_file_location <- "annotation.csv"
 
 # See how to create the annotation file in the README
 # A more "automatic" way of creating this should be available 
@@ -55,15 +55,6 @@ NormalizationType <- if(norm_type == 1){"quantile"} else {
                         }
 }
 
-pif_filter <- menu(c("Yes", "No"), 
-                   title= "Do you want to set a filter for the PIF value of quantitation?")
-
-
-if(pif_filter == 1){
-      pif_filter_threshold <- as.numeric(readline("Please type the threshold of your PIF filter (between 0 and 1; i.e. 0.8) "))
-}
-
-
 ####################################### SCRIPT EXECUTION #######################
 
 ### Load packages ####
@@ -87,7 +78,7 @@ proteingroups <- read.table(file = here::here(proteinGroups_file_location),
 ### Create label IDs for naming files according to conditions ####
 
 # Label for the 'removePeptw1peptide' condition
-if(removeProtein_with1Peptide == FALSE){
+if(remove_w1pep == FALSE){
       w1peptcond <- "protsw1pep"
 } else {
       w1peptcond <- "noprotsw1pep"
@@ -121,7 +112,7 @@ if(file.exists(x = here::here("MSstats_Output_data/msts_data_w1pep.Rda")) == FAL
       msts_data_w1pep <- MaxQtoMSstatsFormat(evidence = evidence,
                                              annotation = annotation,
                                              proteinGroups = proteingroups,
-                                             removeProtein_with1Peptide = removeProtein_with1Peptide)
+                                             removeProtein_with1Peptide = remove_w1pep)
       
       if(dir.exists(here::here("MSstats_Output_data/MSstats_formated_tables")) == FALSE){
          dir.create(here::here("MSstats_Output_data/MSstats_formated_tables"))}
