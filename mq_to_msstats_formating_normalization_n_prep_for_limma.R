@@ -1,10 +1,13 @@
 ##################################################################################################################
 ### 
 ### Formating, normalization and generation of Limma-ready tabular file from MaxQuant output using MSstats #######
-### Miguel Cosenza v1.0 
-###
+### Miguel Cosenza v1.0.1 
+### 16.12.2019
 ##################################################################################################################
 
+## This script will take your MaxQuant output (evidence.txt and proteinGroup.txt files) and an annotation file, 
+# will run MSstats normalization and then generate a tsv file that can be used as Input into Limma 
+# 
 
 ### Set conditions here ####
 
@@ -14,9 +17,10 @@
 
 evidence_file_location <- "evidence.txt"
 
-proteinGroups_file_location <- "proteinGroup.txt"
+proteinGroups_file_location <- "proteinGroups.txt"
 
-annotation_file_location <- "Data/Pan_Can_Cohort/annotation.csv" 
+annotation_file_location <- "annotation.csv"
+
 # See how to create the annotation file in the README
 # A more "automatic" way of creating this should be available 
 # In a future version of this script.
@@ -27,15 +31,29 @@ annotation_file_location <- "Data/Pan_Can_Cohort/annotation.csv"
 
 # Default is FALSE, meaning: you want to keep even those proteins identified w 1 peptide. 
 
-removeProtein_with1Peptide <- FALSE 
+remove_w1pep1 <- menu(c("Yes", "No"), 
+                      title= "Do you want to remove proteins identified only with 1 peptide from your analysis")
+
+remove_w1pep <- if(remove_w1pep1 == 1){TRUE} else {
+                  if(remove_w1pep1 == 2){
+                                    FALSE
+                                    }}
 
 ## What type of normalization to execute? 
 # Default and recommended: "equalizeMedians"
 
-# Options: "quantile", FALSE (no normalization) or ""equalizeMedians"
+# Options: "quantile", FALSE (no normalization) or "equalizeMedians"
 
-NormalizationType <- "equalizeMedians"
+norm_type <- menu(c("quantile", "equalizeMedians", "No normalization"), 
+                  title= "What type  of normalization you want to execute? (equalizeMedians recommended)")
 
+NormalizationType <- if(norm_type == 1){"quantile"} else {
+                        if(norm_type == 2){"equalizeMedians"} else {
+                              if(norm_type == 3){
+                                    FALSE
+                              }
+                        }
+}
 
 ####################################### SCRIPT EXECUTION #######################
 
@@ -57,11 +75,10 @@ proteingroups <- read.table(file = here::here(proteinGroups_file_location),
                             sep = "\t",
                             header = TRUE)
 
-
 ### Create label IDs for naming files according to conditions ####
 
 # Label for the 'removePeptw1peptide' condition
-if(removeProtein_with1Peptide == FALSE){
+if(remove_w1pep == FALSE){
       w1peptcond <- "protsw1pep"
 } else {
       w1peptcond <- "noprotsw1pep"
@@ -95,7 +112,7 @@ if(file.exists(x = here::here("MSstats_Output_data/msts_data_w1pep.Rda")) == FAL
       msts_data_w1pep <- MaxQtoMSstatsFormat(evidence = evidence,
                                              annotation = annotation,
                                              proteinGroups = proteingroups,
-                                             removeProtein_with1Peptide = removeProtein_with1Peptide)
+                                             removeProtein_with1Peptide = remove_w1pep)
       
       if(dir.exists(here::here("MSstats_Output_data/MSstats_formated_tables")) == FALSE){
          dir.create(here::here("MSstats_Output_data/MSstats_formated_tables"))}
@@ -151,6 +168,9 @@ if(dir.exists(here::here("MSstats_Output_data")) == FALSE){
 
 write_csv(x = tab_wide_msts_data, path = here::here("MSstats_Output_data/
                                                     msstats_tabular_data_for_limma_input.csv"))
+
+
+message("File 'msstats_tabular_data_for_limma_input.csv' was stored into MSstats_Output_data")
 
 
 
