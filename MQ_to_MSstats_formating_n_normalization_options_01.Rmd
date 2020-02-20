@@ -1,0 +1,178 @@
+---
+title: "MQ-to-MSstats formating and normalization exploration (Sample report 1)"
+author: "Miguel Cosenza"
+date: "27 11 2019"
+output: rmarkdown::github_document
+---
+
+```{r, echo = FALSE, include=FALSE}
+knitr::opts_chunk$set(
+  fig.path = "Figures_Sample_Report_1/",
+  echo = TRUE
+)
+```
+## Load required packages
+
+```{r load_packages}
+library(tidyverse)
+library(MSstats)
+```
+
+
+## Load input data 
+
+```{r load_input_data}
+evidence <- read.table(file = here::here("Big_files/evidence_pancan_sc1.txt"),
+                       sep = "\t",
+                       header = TRUE)
+
+annotation <- read.csv(file = here::here("Data/Pan_Can_Cohort/annotation_pancan_sc1.csv"),
+                       header = TRUE)
+
+proteingroups <- read.table(file = here::here("Data/Pan_Can_Cohort/proteinGroups_pancan_sc1.txt"),
+                            sep = "\t",
+                            header = TRUE)
+```
+
+## Transformation from Max Quant format to MSstats format 
+
+Here I am evaluating different argument options for the `MaxQtoMSstatsFormat()` function in `MSstats`. 
+
+### Set `removeProtein_with1Peptide = **FALSE**` (all default params)
+
+This is the default parameter.
+
+```{r mqtomstformat1}
+if(dir.exists(here::here("MSstats_Exploration_Outputs")) == FALSE){dir.create(here::here("MSstats_Exploration_Outputs"))}
+
+if(file.exists(x = here::here("MSstats_Exploration_Outputs/msts_data_w1pep.Rda")) == FALSE){ # check if Rda file with the data is already available. 
+      
+      msts_data_w1pep <- MaxQtoMSstatsFormat(evidence = evidence,
+                                         annotation = annotation,
+                                         proteinGroups = proteingroups,
+                                         removeProtein_with1Peptide = FALSE)
+      
+      save(msts_data_w1pep, file = here::here("MSstats_Exploration_Outputs/msts_data_w1pep.Rda")) # save Rda file for faster loading later if required
+      
+      if(dir.exists(here::here("MSstats_Exploration_Outputs/MSstats_formated_tables")) == FALSE){dir.create(here::here("MSstats_Exploration_Outputs/MSstats_formated_tables"))}
+      
+      write.csv(x = msts_data_w1pep, file = here::here("MSstats_Exploration_Outputs/MSstats_formated_tables/msstats_data_protsw1pep.csv")) # protsw1pep means 'this file contains proteins that were identified only with 1 peptide". 
+} else {
+      
+      load(here::here("MSstats_Exploration_Outputs/msts_data_w1pep.Rda")) # load the Rda file if available.
+      
+}
+```
+
+### Set `removeProtein_with1Peptide = **TRUE**` (all other params to default)
+
+```{r mqtomstformat2}
+if(dir.exists(here::here("MSstats_Exploration_Outputs")) == FALSE){dir.create(here::here("MSstats_Exploration_Outputs"))}
+
+if(file.exists(x = here::here("MSstats_Exploration_Outputs/msts_data_noprotw1pep.Rda")) == FALSE){ # check if Rda file with the data is already available. 
+      
+      msts_data_noprotw1pep <- MaxQtoMSstatsFormat(evidence = evidence,
+                                         annotation = annotation,
+                                         proteinGroups = proteingroups,
+                                         removeProtein_with1Peptide = TRUE)
+      
+      
+      save(msts_data_noprotw1pep, file = here::here("MSstats_Exploration_Outputs/msts_data_noprotw1pep.Rda")) # save Rda file for faster loading later if required
+      
+      if(dir.exists(here::here("MSstats_Exploration_Outputs/MSstats_formated_tables")) == FALSE){dir.create(here::here("MSstats_Exploration_Outputs/MSstats_formated_tables"))}
+      
+      write.csv(x = msts_data_noprotw1pep, file = here::here("MSstats_Exploration_Outputs/MSstats_formated_tables/msstats_data_noprotw1pep.csv")) # noprotw1pe means 'this file does not contains proteins that were identified only with 1 peptide". 
+} else {
+      
+      load(here::here("MSstats_Exploration_Outputs/msts_data_noprotw1pep.Rda")) # load the Rda file if available.
+      
+}
+```
+
+#### Check the difference in the number of proteins when using the different parameters 
+
+
+**Number of proteins when including those identified with 1 peptide (default)**
+```{r diff_n_prot_byformating_options1}
+length(unique(msts_data_w1pep$ProteinName))
+```
+
+**Number of proteins when not including those identified with 1 peptide**
+```{r diff_n_prot_byformating options2}
+length(unique(msts_data_noprotw1pep$ProteinName))
+```
+
+```{r include=FALSE}
+uniqpepdat1 <- tibble(N = c(length(unique(msts_data_w1pep$ProteinName)), length(unique(msts_data_noprotw1pep$ProteinName))),
+                      param = c("w1pep","noprotw1pep"))
+```
+
+```{r barplot1}
+barplot1 <- ggplot(uniqpepdat1,
+                   aes(y = N,
+                       x = param))+
+            geom_col()
+print(barplot1)
+```
+
+In this case I'll continue with normalization on the data that includes proteins identified with 1 peptide.
+
+## Correction of protein IDs  
+
+Get the first listed protein ID when many Uniprot IDs are listed into one Protein Group (identified peptides matching several proteins in the database)
+
+```{r correct_proteinIDs}
+msts_formated_data <- dplyr::mutate(msts_data_w1pep,
+                             ProteinName = stringr::str_remove_all(ProteinName, ";.*$")) %>%
+                      dplyr::mutate(ProteinName = stringr::str_trim(ProteinName))
+```
+
+## Testing MSstats `dataProcess()` options  
+
+### Testing options for `normalization` (all features selected and log transformation = 2)  
+
+#### Equalize Medians normalization  
+```{r dataprocess1}
+dp_all_log2_eqmNorm <- dataProcess(msts_formated_data,
+                                   logTrans=2,
+                                   normalization="equalizeMedians",
+                                   nameStandards=NULL,
+                                   address="",
+                                   fillIncompleteRows=TRUE,
+                                   featureSubset="all",
+                                   remove_uninformative_feature_outlier=FALSE,
+                                   n_top_feature=3,
+                                   summaryMethod="TMP",
+                                   equalFeatureVar=TRUE,
+                                   censoredInt="NA",
+                                   cutoffCensored="minFeature",
+                                   MBimpute=TRUE,
+                                   remove50missing=FALSE,
+                                   maxQuantileforCensored=0.999,
+                                   clusters=NULL)
+```
+
+#### Quantile normalization  
+```{r dataprocess2}
+dp_all_log2_quatNorm <- dataProcess(msts_formated_data,
+                                   logTrans=2,
+                                   normalization="quantile",
+                                   nameStandards=NULL,
+                                   address="",
+                                   fillIncompleteRows=TRUE,
+                                   featureSubset="all",
+                                   remove_uninformative_feature_outlier=FALSE,
+                                   n_top_feature=3,
+                                   summaryMethod="TMP",
+                                   equalFeatureVar=TRUE,
+                                   censoredInt="NA",
+                                   cutoffCensored="minFeature",
+                                   MBimpute=TRUE,
+                                   remove50missing=FALSE,
+                                   maxQuantileforCensored=0.999,
+                                   clusters=NULL)
+```
+
+### Testing options for `featureSubset` selection (log transformation = 2 and 'equalizeMedians' normalization)  
+
+#### 
