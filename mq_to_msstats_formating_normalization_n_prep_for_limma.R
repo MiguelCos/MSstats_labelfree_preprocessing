@@ -15,11 +15,11 @@
 
 # Note: the files should be in the same R Project file from where the script would be executed. 
 
-evidence_file_location <- "evidence.txt"
+#evidence_file_location <- "evidence.txt"
 
-proteinGroups_file_location <- "proteinGroups.txt"
+#proteinGroups_file_location <- "proteinGroups.txt"
 
-annotation_file_location <- "annotation.csv"
+#annotation_file_location <- "annotation.csv"
 
 # See how to create the annotation file in the README
 # A more "automatic" way of creating this should be available 
@@ -84,14 +84,14 @@ library(tidyr)
 
 ### Read and load input files ####
 
-evidence <- read.table(file = here::here(evidence_file_location),
+evidence <- read.table(file = here::here("evidence.txt"),
                        sep = "\t",
                        header = TRUE)
 
-annotation <- read.csv(file = here::here(annotation_file_location),
+annotation <- read.csv(file = here::here("proteinGroups.txt"),
                        header = TRUE)
 
-proteingroups <- read.table(file = here::here(proteinGroups_file_location),
+proteingroups <- read.table(file = here::here("annotation.csv"),
                             sep = "\t",
                             header = TRUE)
 
@@ -127,7 +127,7 @@ proteingroups <- read.table(file = here::here(proteinGroups_file_location),
 if(dir.exists(here::here("MSstats_Output_data")) == FALSE){
    dir.create(here::here("MSstats_Output_data"))}
 
-if(file.exists(x = here::here("MSstats_Output_data/msts_data_w1pep.Rda")) == FALSE){ # check if Rda file with the data is already available. 
+#if(file.exists(x = here::here("MSstats_Output_data/msts_data_w1pep.Rda")) == FALSE){ # check if Rda file with the data is already available. 
       
       msts_data_w1pep <- MaxQtoMSstatsFormat(evidence = evidence,
                                              annotation = annotation,
@@ -150,11 +150,11 @@ if(file.exists(x = here::here("MSstats_Output_data/msts_data_w1pep.Rda")) == FAL
       # File name definition
       file_name1 <- paste0("msstas_formated_data_bf_normalization.csv")
       
-      write.csv(x = msts_formated_data, file = here::here(paste0("MSstats_Output_data/MSstats_formated_tables/",file_name))) 
+      write.csv(x = msts_formated_data, file = here::here(paste0("MSstats_Output_data/MSstats_formated_tables/",file_name1))) 
       
       ### Normalization ####
       
-      normalized_data <- dataProcess(msts_data_w1pep,
+      normalized_data <- dataProcess(msts_formated_data,
                                      logTrans=2,
                                      normalization="equalizeMedians",
                                      nameStandards=NULL,
@@ -172,7 +172,7 @@ if(file.exists(x = here::here("MSstats_Output_data/msts_data_w1pep.Rda")) == FAL
                                      maxQuantileforCensored=0.999,
                                      clusters=NULL)
       
-}
+#}
 
 ### Getting tabular data into wide format as an input for Limma ####
 
