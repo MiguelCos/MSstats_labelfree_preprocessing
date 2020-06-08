@@ -5,11 +5,7 @@
 ### 16.12.2019
 ##################################################################################################################
 
-#<<<<<<< HEAD
-## This script will take your MaxQuant output (evidence.txt and proteinGroup.txt files) and an annotation file, 
-#
 ## This script will take you MaxQuant output (evidence.txt and proteinGroup.txt files) and an annotation file, 
-#>>>>>>> b8a34b150f5a48f649f42e3afa5f996e8b0a6cde
 # will run MSstats normalization and then generate a tsv file that can be used as Input into Limma 
 # 
 
