@@ -187,11 +187,10 @@ tab_selection_msts_data <- dplyr::select(tab_proccessed_data,
 tab_wide_msts_data <- tidyr::pivot_wider(data = tab_selection_msts_data,
                                   names_from = GROUP_REPLICATE_RUN, values_from = LogIntensities) # make data wide
 
-if(dir.exists(here::here("MSstats_Output_data")) == FALSE){
-   dir.create(here::here("MSstats_Output_data"))}
+#if(dir.exists(here::here("MSstats_Output_data")) == FALSE){
+#   dir.create(here::here("MSstats_Output_data"))}
 
-
-write_csv(x = tab_wide_msts_data, path = here::here("MSstats_Output_data/msstats_tabular_data_for_limma_input.csv"))
+write_csv(x = tab_wide_msts_data, path = here::here("msstats_tabular_data_for_limma_input.csv"))
 
 
 #message("File 'msstats_tabular_data_for_limma_input.csv' was stored into MSstats_Output_data")
