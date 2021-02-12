@@ -88,10 +88,10 @@ evidence <- read.table(file = here::here("evidence.txt"),
                        sep = "\t",
                        header = TRUE)
 
-annotation <- read.csv(file = here::here("proteinGroups.txt"),
+annotation <- read.csv(file = here::here("annotation.csv"),
                        header = TRUE)
 
-proteingroups <- read.table(file = here::here("annotation.csv"),
+proteingroups <- read.table(file = here::here("proteinGroups.txt"),
                             sep = "\t",
                             header = TRUE)
 
