@@ -104,7 +104,7 @@ diann_msstats_formated <- DIANN_to_MSstats(diann_data, annotation)
       
       write.csv(x = msts_formated_data, file = here::here(paste0("MSstats_Output_data/MSstats_formated_tables/",file_name1))) 
       
-      ### Normalization ####
+      ### Normalization #####
       
       normalized_data <- dataProcess(msts_formated_data,
                                      logTrans=logTrans,
