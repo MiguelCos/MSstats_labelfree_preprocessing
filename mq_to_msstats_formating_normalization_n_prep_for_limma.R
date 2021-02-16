@@ -1,8 +1,8 @@
 ##################################################################################################################
 ### 
 ### Formating, normalization and generation of Limma-ready tabular file from MaxQuant output using MSstats #######
-### Miguel Cosenza v1.0.1 
-### 16.12.2019
+### Miguel Cosenza v1.2 
+### 16.02.2021
 ##################################################################################################################
 
 ## This script will take you MaxQuant output (evidence.txt and proteinGroup.txt files) and an annotation file, 
@@ -11,49 +11,43 @@
 
 ### Set conditions here ####
 
+### Set the parameters for MaxQtoMSstatsFormat function ----
+
+proteinID = "Proteins"
+useUniquePeptide = TRUE
+summaryforMultipleRows = max
+fewMeasurements = "remove"
+removeMpeptides = FALSE
+removeOxidationMpeptides = FALSE
+removeProtein_with1Peptide = TRUE
+
+### Set the parameters for dataProcess (summarization and normalization) function ----
+
+logTrans = 2
+normalization = "equalizeMedians"
+nameStandards = NULL
+address = ""
+fillIncompleteRows = TRUE
+featureSubset = "all"
+remove_uninformative_feature_outlier = FALSE
+n_top_feature = 3
+summaryMethod = "TMP"
+equalFeatureVar = TRUE
+censoredInt = "NA"
+cutoffCensored = "minFeature"
+MBimpute = TRUE
+remove50missing = FALSE
+maxQuantileforCensored = 0.999
+clusters = NULL
+
 ## Please provide the name of the MaxQuant output files to be processed
 
 # Note: the files should be in the same R Project file from where the script would be executed. 
-
-#evidence_file_location <- "evidence.txt"
-
-#proteinGroups_file_location <- "proteinGroups.txt"
-
-#annotation_file_location <- "annotation.csv"
 
 # See how to create the annotation file in the README
 # A more "automatic" way of creating this should be available 
 # In a future version of this script.
 
-### Please indicate if: 
-
-## Do you want MSstats to remove proteins identified only with 1 peptide from the list?
-
-# Default is FALSE, meaning: you want to keep even those proteins identified w 1 peptide. 
-
-#remove_w1pep1 <- menu(c("Yes", "No"), 
-#                      title= "Do you want to remove proteins identified only with 1 peptide from your analysis")
-
-#remove_w1pep <- if(remove_w1pep1 == 1){TRUE} else {
-#                  if(remove_w1pep1 == 2){
-#                                    FALSE
-#                                    }}
-
-## What type of normalization to execute? 
-# Default and recommended: "equalizeMedians"
-
-# Options: "quantile", FALSE (no normalization) or "equalizeMedians"
-
-#norm_type <- menu(c("quantile", "equalizeMedians", "No normalization"), 
-#                 title= "What type  of normalization you want to execute? (equalizeMedians recommended)")
-
-#NormalizationType <- if(norm_type == 1){"quantile"} else {
-#                        if(norm_type == 2){"equalizeMedians"} else {
-#                              if(norm_type == 3){
-#                                    FALSE
-#                              }
-#                        }
-#}
 
 ####################################### SCRIPT EXECUTION #######################
 
@@ -95,33 +89,6 @@ proteingroups <- read.table(file = here::here("proteinGroups.txt"),
                             sep = "\t",
                             header = TRUE)
 
-### Create label IDs for naming files according to conditions ####
-
-# Label for the 'removePeptw1peptide' condition
-#if(remove_w1pep == FALSE){
-#      w1peptcond <- "protsw1pep"
-#} else {
-#      w1peptcond <- "noprotsw1pep"
-#}
-
-
-# Label for the normalization type condition
-
-#if(NormalizationType == "equalizeMedians"){
-#      normalization <- "equalizedMediansNorm"
-#} else {
-#      if(NormalizationType == "quantile"){
-#            normalization <- "quantileNorm"
-#      } else {
-#            if(NormalizationType == FALSE){
-#                  normalization <- "NoNormalization"
-#            } else {
-#                  stop("Error: You did not choose the right parameter for normalization. Maybe check for typos?",
-#                       call. = FALSE)
-#            }
-#      }
-#}
-
 ### Transform Max Quant format to MSstats format ####
 
 if(dir.exists(here::here("MSstats_Output_data")) == FALSE){
@@ -131,10 +98,15 @@ if(dir.exists(here::here("MSstats_Output_data")) == FALSE){
       
       msts_data_w1pep <- MaxQtoMSstatsFormat(evidence = evidence,
                                              annotation = annotation,
-                                             useUniquePeptide=TRUE,
                                              proteinGroups = proteingroups,
-                                             fewMeasurements="remove",
-                                             removeProtein_with1Peptide	=TRUE)
+                                             proteinID=proteinID, 
+                                             useUniquePeptide=proteinID, 
+                                             summaryforMultipleRows=summaryforMultipleRows, 
+                                             fewMeasurements=fewMeasurements, 
+                                             removeMpeptides=removeMpeptides,
+                                             removeOxidationMpeptides=removeOxidationMpeptides,
+                                             removeProtein_with1Peptide=removeProtein_with1Peptide
+                                             )
       
       if(dir.exists(here::here("MSstats_Output_data/MSstats_formated_tables")) == FALSE){
          dir.create(here::here("MSstats_Output_data/MSstats_formated_tables"))}
@@ -155,22 +127,27 @@ if(dir.exists(here::here("MSstats_Output_data")) == FALSE){
       ### Normalization ####
       
       normalized_data <- dataProcess(msts_formated_data,
-                                     logTrans=2,
-                                     normalization="equalizeMedians",
-                                     nameStandards=NULL,
-                                     address="",
-                                     fillIncompleteRows=TRUE,
-                                     featureSubset="highQuality",
-                                     remove_uninformative_feature_outlier=TRUE,
-                                     n_top_feature=3,
-                                     summaryMethod="TMP",
-                                     equalFeatureVar=TRUE,
-                                     censoredInt="NA",
-                                     cutoffCensored="minFeature",
-                                     MBimpute=TRUE,
-                                     remove50missing=FALSE,
-                                     maxQuantileforCensored=0.999,
-                                     clusters=NULL)
+                                     logTrans=logTrans,
+                                     normalization=normalization,
+                                     nameStandards=nameStandards,
+                                     address=address,
+                                     fillIncompleteRows=fillIncompleteRows,
+                                     featureSubset=featureSubset,
+                                     remove_uninformative_feature_outlier=remove_uninformative_feature_outlier,
+                                     n_top_feature=n_top_feature,
+                                     summaryMethod=summaryMethod,
+                                     equalFeatureVar=equalFeatureVar,
+                                     censoredInt=censoredInt,
+                                     cutoffCensored=cutoffCensored,
+                                     MBimpute=MBimpute,
+                                     remove50missing=remove50missing,
+                                     maxQuantileforCensored=maxQuantileforCensored,
+                                     clusters=maxQuantileforCensored)
+      
+      # File name definition
+      file_name2 <- paste0("msstas_formated_data_after_normalization.csv")
+      
+      write.csv(x = msts_formated_data, file = here::here(paste0("MSstats_Output_data/MSstats_formated_tables/",file_name2))) 
       
 #}
 
@@ -187,13 +164,9 @@ tab_selection_msts_data <- dplyr::select(tab_proccessed_data,
 tab_wide_msts_data <- tidyr::pivot_wider(data = tab_selection_msts_data,
                                   names_from = GROUP_REPLICATE_RUN, values_from = LogIntensities) # make data wide
 
-#if(dir.exists(here::here("MSstats_Output_data")) == FALSE){
-#   dir.create(here::here("MSstats_Output_data"))}
-
 write_csv(x = tab_wide_msts_data, path = here::here("msstats_tabular_data_for_limma_input.csv"))
 
 
-#message("File 'msstats_tabular_data_for_limma_input.csv' was stored into MSstats_Output_data")
 
 
 

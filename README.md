@@ -6,9 +6,9 @@ output:
 ---
 # MSstats label-free preprocessing
 
-This repo contains a script and a Rmd file for the pre-processing and normalization of MaxQuant output files through the `MSstats` R package. The output is a tabular file in wide format (1 row per protein, 1 column per sample/condition) that could be used as an input to run statistics with `Limma` or similar. 
+This repo contains a script and a Rmd file for the pre-processing and normalization of MaxQuant or DIA-NN output files through the `MSstats` R package. The output is a tabular file in wide format (1 row per protein, 1 column per sample/condition) that could be used as an input to run statistics with `Limma` or similar. 
 
-## Instructions for using the script and to create a reproducible report of your normalization step  
+## Instructions for using the script for your normalization step starting from MaxQuant outpus
 
 1. Download/clone the contents of this repo into your local computer. This should create a R project folder with the script to run the preprocessing. 
 
@@ -24,11 +24,39 @@ This repo contains a script and a Rmd file for the pre-processing and normalizat
 
 4. Open your RStudio project by double-clicking the `.Rproj` file in your newly created R project folder. 
 
-5. Type in your R console: `source("mq_to_msstats_formating_normalization_n_prep_for_limma")` to execute the script.  
+5. Open the script `mq_to_msstats_formating_normalization_n_prep_for_limma.R`
 
-6. Answer the questions as promted on the R console.  
+6. Modify lines between `16` to `31` to set up the parameters for both the transformation from MaxQuant format to MSstats format, and for the actual summarizaton and normalization.
 
-7. The script should generate two `.csv` files: one in long MSstats-format and one in wide format, suitable as an input for Limma.  
+7. Execute the script (click 'Source' on the top-right corner of the script).
+
+8. The script should generate three `.csv` files: `msstats_tabular_data_for_limma_input.csv`, in wide format suitable for downstream analysis with `limma`. And two files in long format within `MSstats_Output_data` with the un-normalized and the normalized feature intensities before and after MSstats pre-processing.
+
+## Instructions for using the script for your normalization step starting from DIANN outputs  
+
+__BE AWARE!!__: There is a know issue with the `dataProcessing` function fron MSstats that makes it use a lot of RAM with big input files (> 1 million rows). If you have A big output from DIANN and have issues with your R session crashing due to RAM overload, you can execute this script up to line `105` and get the output of the MSstats formatted data from  `~/MSstats_Output_data/MSstats_formated_tables/msstas_formated_diann_data_bf_normalization.csv` and continue on Galaxy, where the RAM shouldn't be an issue.
+
+1. Download/clone the contents of this repo into your local computer. This should create a R project folder with the script to run the preprocessing. 
+
+2. Delete the `MSstats_Output_data/` folder and its contents from your local computer.
+
+3. Add the `MainOutput.tsv` output file from DIA-NN into this folder.
+
+4. Add your `annotation_diann.csv` file into this folder.
+
+**NOTE**: These files should be in the same folder as the R script, and this folder should be an initiated RStudio project (There should be a .Rproj file in the same folder). 
+
+**NOTE 2**: Check the `samples` folder a sample of the `annotation_diann.csv` file and how it should look like.
+
+4. Open your RStudio project by double-clicking the `.Rproj` file in your newly created R project folder. 
+
+5. Open the script `diann_to_msstats_formating_normalization_n_prep_for_limma.R`
+
+6. Modify lines between `16` to `21` to set up the parameters for both the transformation from MaxQuant format to MSstats format, and for the actual summarizaton and normalization.
+
+7. Execute the script (click 'Source' on the top-right corner of the script).
+
+8. The script should generate three `.csv` files: `msstats_tabular_data_for_limma_input.csv`, in wide format suitable for downstream analysis with `limma`. And two files in long format within `MSstats_Output_data` with the un-normalized and the normalized feature intensities before and after MSstats pre-processing.
 
 ## Creating the annotation file   
 
