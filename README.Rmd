@@ -1,9 +1,10 @@
 ---
 output:
+  github_document:
+    html_preview: false
   word_document: default
   pdf_document: default
   html_document: default
-  github_document: defaut
 ---
 # MSstats label-free preprocessing
 
