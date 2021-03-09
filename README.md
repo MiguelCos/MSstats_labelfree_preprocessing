@@ -34,7 +34,7 @@ This repo contains a script and a Rmd file for the pre-processing and normalizat
 
 ## Instructions for using the script for your normalization step starting from DIANN outputs  
 
-__BE AWARE!!__: There is a know issue with the `dataProcessing` function fron MSstats that makes it use a lot of RAM with big input files (> 1 million rows). If you have A big output from DIANN and have issues with your R session crashing due to RAM overload, you can execute this script up to line `105` and get the output of the MSstats formatted data from  `~/MSstats_Output_data/MSstats_formated_tables/msstas_formated_diann_data_bf_normalization.csv` and continue on Galaxy, where the RAM shouldn't be an issue.
+__BE AWARE!!__: There is a known issue with the `dataProcessing` function fron MSstats that makes it use a lot of RAM with big input files (> 1 million rows). If you have A big output from DIANN and have issues with your R session crashing due to RAM overload, you can execute this script up to line `105` and get the output of the MSstats formatted data from  `~/MSstats_Output_data/MSstats_formated_tables/msstas_formated_diann_data_bf_normalization.csv` and continue on Galaxy, where the RAM shouldn't be an issue.
 
 1. Download/clone the contents of this repo into your local computer. This should create a R project folder with the script to run the preprocessing. 
 
