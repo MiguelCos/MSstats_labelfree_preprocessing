@@ -1,15 +1,25 @@
 ##################################################################################################################
 ### 
-### Formating, normalization and generation of Limma-ready tabular file from DIANN output using MSstats #######
-### Miguel Cosenza v1.0
+### Formating, normalization and generation of Limma-ready tabular file from MaxQuant output using MSstats #######
+### Miguel Cosenza v1.2 
 ### 16.02.2021
 ##################################################################################################################
 
-## This script will take your DIANN output and an annotation file, 
+## This script will take you MaxQuant output (evidence.txt and proteinGroup.txt files) and an annotation file, 
 # will run MSstats normalization and then generate a tsv file that can be used as Input into Limma 
 # 
 
 ### Set conditions here ####
+
+### Set the parameters for MaxQtoMSstatsFormat function ----
+
+proteinID = "Proteins"
+useUniquePeptide = TRUE
+summaryforMultipleRows = max
+fewMeasurements = "remove"
+removeMpeptides = FALSE
+removeOxidationMpeptides = FALSE
+removeProtein_with1Peptide = TRUE
 
 ### Set the parameters for dataProcess (summarization and normalization) function ----
 
@@ -30,10 +40,7 @@ remove50missing = FALSE
 maxQuantileforCensored = 0.999
 clusters = NULL
 
-## Please provide the name of the DIANN output files to be processed
-
-diann_file <- "DIANN_results.tsv" # this file should be located on the same RStudio project 
-                                 # folder as this script.
+## Please provide the name of the MaxQuant output files to be processed
 
 # Note: the files should be in the same R Project file from where the script would be executed. 
 
@@ -71,23 +78,36 @@ library(tidyr)
 
 ### Read and load input files ####
 
-diann_data <- suppressWarnings(
-               read_tsv(file = here::here(diann_file)))
+evidence <- read.table(file = here::here("evidence.txt"),
+                       sep = "\t",
+                       header = TRUE)
 
-annotation <- read.csv(file = here::here("annotation_diann.csv"),
-                         header = TRUE,
-                         stringsAsFactors = FALSE)
+annotation <- read.csv(file = here::here("annotation.csv"),
+                       header = TRUE)
 
+proteingroups <- read.table(file = here::here("proteinGroups.txt"),
+                            sep = "\t",
+                            header = TRUE)
 
-### Transform DIANN format to MSstats format ####
+### Transform Max Quant format to MSstats format ####
 
 if(dir.exists(here::here("MSstats_Output_data")) == FALSE){
    dir.create(here::here("MSstats_Output_data"))}
 
-source("R/diann2msstats.R")
-
-diann_msstats_formated <- DIANN_to_MSstats(diann_data, annotation)
-
+#if(file.exists(x = here::here("MSstats_Output_data/msts_data_w1pep.Rda")) == FALSE){ # check if Rda file with the data is already available. 
+      
+      msts_data_w1pep <- MaxQtoMSstatsFormat(evidence = evidence,
+                                             annotation = annotation,
+                                             proteinGroups = proteingroups,
+                                             proteinID=proteinID, 
+                                             useUniquePeptide=proteinID, 
+                                             summaryforMultipleRows=summaryforMultipleRows, 
+                                             fewMeasurements=fewMeasurements, 
+                                             removeMpeptides=removeMpeptides,
+                                             removeOxidationMpeptides=removeOxidationMpeptides,
+                                             removeProtein_with1Peptide=removeProtein_with1Peptide
+                                             )
+      
       if(dir.exists(here::here("MSstats_Output_data/MSstats_formated_tables")) == FALSE){
          dir.create(here::here("MSstats_Output_data/MSstats_formated_tables"))}
 
@@ -95,16 +115,16 @@ diann_msstats_formated <- DIANN_to_MSstats(diann_data, annotation)
       # Get the first listed proteinID when many Uniprot IDs are listed into one 
       # Protein Group (many identified peptides matching several proteins in the database)
       
-      msts_formated_data <- dplyr::mutate(diann_msstats_formated,
+      msts_formated_data <- dplyr::mutate(msts_data_w1pep,
                                           ProteinName = stringr::str_remove_all(ProteinName, ";.*$")) %>%
                             dplyr::mutate(ProteinName = stringr::str_trim(ProteinName))
       
       # File name definition
-      file_name1 <- paste0("msstas_formated_diann_data_bf_normalization.csv")
+      file_name1 <- paste0("msstas_formated_data_bf_normalization.csv")
       
       write.csv(x = msts_formated_data, file = here::here(paste0("MSstats_Output_data/MSstats_formated_tables/",file_name1))) 
       
-      ### Normalization #####
+      ### Normalization ####
       
       normalized_data <- dataProcess(msts_formated_data,
                                      logTrans=logTrans,

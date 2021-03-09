@@ -29,12 +29,12 @@ library(dplyr)
 DIANN_to_MSstats <- function(diann_data, annotation_file){
 
 #remove filepath from File.Name
-diann_data1 <- mutate(diann_data, File.Name = str_replace(diann_data[[1]], ".*\\\\", ""))
-diann_data1 <- mutate(diann_data1, File.Name = str_replace(diann_data1[[1]], ".raw.mzml$", ""))
+data <- mutate(diann_data, File.Name = str_replace(data[[1]], ".*\\\\", ""))
+data <- mutate(diann_data, File.Name = str_replace(data[[1]], ".raw.mzml$", ""))
 
 #select relevant columns -> choose which parameter to use for quantitation
 
-for_msstats_prot <- diann_data1 %>% 
+for_msstats_prot <- data %>% 
       group_by(Stripped.Sequence, 
                Protein.Group, 
                Precursor.Charge, 
@@ -44,6 +44,14 @@ for_msstats_prot <- diann_data1 %>%
 
 for_msstats_prot1 <- mutate(for_msstats_prot,
                             File.Name = str_remove(File.Name, ".raw$"))
+
+##Precursor.Quantity only gives intensities on Precursor level and demands downstream normalization and processing into protein groups
+for_msstats_prot <- for_msstats_prot %>% group_by(Stripped.Sequence, 
+                                                  Protein.Group, 
+                                                  Precursor.Charge, 
+                                                  File.Name, 
+                                                  Precursor.Quantity) %>% 
+      summarize()
 
 #merge with MSstats annotation file
 annotation <- annotation_file

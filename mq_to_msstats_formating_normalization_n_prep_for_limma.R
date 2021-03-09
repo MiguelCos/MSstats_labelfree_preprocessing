@@ -100,7 +100,7 @@ if(dir.exists(here::here("MSstats_Output_data")) == FALSE){
                                              annotation = annotation,
                                              proteinGroups = proteingroups,
                                              proteinID=proteinID, 
-                                             useUniquePeptide=proteinID, 
+                                             useUniquePeptide=useUniquePeptide, 
                                              summaryforMultipleRows=summaryforMultipleRows, 
                                              fewMeasurements=fewMeasurements, 
                                              removeMpeptides=removeMpeptides,
@@ -142,7 +142,7 @@ if(dir.exists(here::here("MSstats_Output_data")) == FALSE){
                                      MBimpute=MBimpute,
                                      remove50missing=remove50missing,
                                      maxQuantileforCensored=maxQuantileforCensored,
-                                     clusters=maxQuantileforCensored)
+                                     clusters=clusters)
       
       # File name definition
       file_name2 <- paste0("msstas_formated_data_after_normalization.csv")
